@@ -1,7 +1,7 @@
 // Create a WebSocket object and specify the server URL
 // const socket = new WebSocket("ws://localhost:8080");
-// const socket = new WebSocket("ws://89.111.172.139:8080");
-const socket = new WebSocket("ws://felarn.site");
+ const socket = new WebSocket("ws://89.111.172.139:8080");
+//const socket = new WebSocket("ws://felarn.site");
 
 const connectionStatus = document.querySelector("#status");
 const IDinput = document.querySelector("#ID-to-join");
