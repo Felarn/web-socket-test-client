@@ -1,3 +1,7 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
 #status {
     border-radius: 5px;
     /* border-width: 3px; */
@@ -11,4 +15,55 @@
 .online {
     background-color: green;
     /* border-color: red; */
+}
+
+#chat-box {
+    display: flex;
+    flex-direction: column-reverse;
+    border-style: solid;
+    border-radius: 5px;
+    border-color: rgb(18, 15, 26);
+    border-width: 2;
+    background-color: aliceblue;
+}
+
+.message {
+    border-bottom: 1px solid #ccc;
+}
+
+/* стили аватарок */
+h1 {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.user-table {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    /* background-color: DodgerBlue; */
+}
+
+.user-row {
+    display: flex;
+    align-items: center;
+    padding: 8px;
+    border-bottom: 1px solid #ccc;
+}
+
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #06c200;
+    margin-right: 12px;
+}
+
+.user-name {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: bold;
+}
+
+.user-status {
+    font-size: 12px;
+    color: #888;
 }

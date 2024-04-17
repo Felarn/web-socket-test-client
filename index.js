@@ -1,7 +1,7 @@
 // Create a WebSocket object and specify the server URL
-// const socket = new WebSocket("ws://localhost:8080");
+const socket = new WebSocket("ws://localhost:8080");
  // const socket = new WebSocket("wss://89.111.172.139:8080");
-const socket = new WebSocket("wss://felarn.site");
+// const socket = new WebSocket("wss://felarn.site");
 
 const connectionStatus = document.querySelector("#status");
 const IDinput = document.querySelector("#ID-to-join");
@@ -31,15 +31,17 @@ newGameButton.addEventListener("click", () => {
   socket.send(JSON.stringify(state));
 });
 
-// const messageLog = document.querySelector(".message-log");
+const messageLog = document.querySelector("#chat-box");
 
 // // Event handler for incoming messages from the server
-// socket.onmessage = function (event) {
-//   console.log("Received message from server:", event.data);
-//   const newItem = document.createElement("li");
-//   newItem.append(document.createTextNode("server said: " + event.data));
-//   messageLog.appendChild(newItem);
-// };
+socket.onmessage = function (event) {
+  // const data = JSON.parse(event.data)
+  console.log("Received message from server:", event.data);
+  const newItem = document.createElement("li");
+  newItem.classList.add('message')
+  newItem.append(document.createTextNode("server said: " + event.data));
+  messageLog.appendChild(newItem);
+};
 
 // Event handler for WebSocket errors
 socket.onerror = function (error) {
