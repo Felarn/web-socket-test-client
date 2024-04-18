@@ -1,12 +1,13 @@
 // Create a WebSocket object and specify the server URL
-// const socket = new WebSocket("ws://localhost:8080");
- // const socket = new WebSocket("wss://89.111.172.139:8080");
-const socket = new WebSocket("wss://felarn.site");
+const socket = new WebSocket("ws://localhost:8080");
+// const socket = new WebSocket("wss://89.111.172.139:8080");
+// const socket = new WebSocket("wss://felarn.site");
 
 const connectionStatus = document.querySelector("#status");
 const IDinput = document.querySelector("#ID-to-join");
-const joinButtGon = document.querySelector("#join");
 const newGameButton = document.querySelector("#new-game");
+const joinButton = document.querySelector("#join");
+const leaveButton = document.querySelector("#leave");
 const playerNameInput = document.querySelector("#player-name");
 
 state = { ID: null, playerName: "anon", action: "none" };
@@ -17,10 +18,17 @@ socket.onopen = function (event) {
   socket.send(JSON.stringify(state));
 };
 
-joinButtGon.addEventListener("click", () => {
+joinButton.addEventListener("click", () => {
   state.action = "join";
   state.playerName = playerNameInput.value;
-  state.ID = IDinput.value;
+  state.gameID = IDinput.value;
+  socket.send(JSON.stringify(state));
+});
+
+leaveButton.addEventListener("click", () => {
+  state.action = "leave";
+  state.playerName = playerNameInput.value;
+  state.gameID = IDinput.value;
   socket.send(JSON.stringify(state));
 });
 
@@ -38,7 +46,7 @@ socket.onmessage = function (event) {
   // const data = JSON.parse(event.data)
   console.log("Received message from server:", event.data);
   const newItem = document.createElement("li");
-  newItem.classList.add('message')
+  newItem.classList.add("message");
   newItem.append(document.createTextNode("server said: " + event.data));
   messageLog.appendChild(newItem);
 };
