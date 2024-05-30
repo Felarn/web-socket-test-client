@@ -29,14 +29,49 @@
         </li>
     </ul>
 
+    
+    <div >
+        <button id="pickSideCross">играть за ✕</button> 
+        <button id="pickSideCircle">играть за ◯</button> 
+    </div>
+
+    <div id="board">
+        <table>
+
+            <tr>
+                <td class="number">3</td>
+                <td id="a3" class="clickable"></td>
+                <td id="b3" class="vertical clickable"></td>
+                <td id="c3" class="clickable"></td>
+            </tr>
+            <tr>
+                <td class="number">2</td>
+                <td id="a2" class="horizontal clickable"></td>
+                <td id="b2" class="vertical horizontal clickable"></td>
+                <td id="c2" class="horizontal clickable"></td>
+            </tr>
+            <tr>
+                <td class="number clickable">1</td>
+                <td id="a1" class="clickable"></td>
+                <td id="b1" class="vertical clickable"></td>
+                <td id="c1" class="clickable"></td>
+            </tr>
+            <tr>
+                <td class="empty"></td>
+                <td class="letter">a</td>
+                <td class="letter">b</td>
+                <td class="letter">c</td>
+            </tr>
+        </table>
+    </div>
 
     <!-- <button class="hello-button">Say hello to the server</button>
     <button class="test-button">locally add string to log</button> -->
     <div class="chat-bounding-box" >
         <div class="users-bounding-box">
 
-            <h1>Users:</h1>
-            <div class="user-table">
+            <h1 class="hidden">Users:</h1>
+            <div class="user-table hidden">
                 <div class="user-row">
                     <div class="user-avatar"></div>
                     <div class="user-info">
@@ -63,6 +98,7 @@
         <!-- <ul class="message-log">
         </ul> -->
     </div>
+
     </body>
     <script src="index.js" type="module"></script>
     <!-- <script src="client-router.js" type="module"></script> -->

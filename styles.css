@@ -7,6 +7,8 @@ body {
     /* border-width: 3px; */
 }
 
+
+
 .offline {
     background-color: red;
     /* border-color: red; */
@@ -15,6 +17,10 @@ body {
 .online {
     background-color: green;
     /* border-color: red; */
+}
+
+.flex-container {
+    display: flex;
 }
 
 .chat-bounding-box {
@@ -71,4 +77,58 @@ h1 {
 .user-status {
     font-size: 12px;
     color: #888;
+}
+
+table {
+    border-collapse: collapse;
+    font-family: Arial, sans-serif;
+    font-size: 30px;
+    text-align: center;
+}
+
+td {
+    width: 100px;
+    height: 100px;
+}
+
+.horizontal {
+    border-top: 5px solid black;
+    border-bottom: 5px solid black;
+}
+
+.vertical {
+    border-left: 5px solid black;
+    border-right: 5px solid black;
+}
+
+
+.number {
+    text-align: center;
+
+}
+
+.letter {
+    text-align: center;
+
+}
+
+.clickable {
+    cursor: pointer;
+}
+
+[data-state="cross"]::after {
+    /* background-color: #06c200; */
+    font-size: 60px;
+    content: "✕";
+    /* content: "◯"; */
+}
+
+[data-state="circle"]::after {
+    /* background-color: #06c200; */
+    font-size: 60px;
+    content: "◯";
+}
+
+.hidden {
+    display: none;
 }
