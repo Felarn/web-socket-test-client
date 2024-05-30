@@ -23,37 +23,47 @@
         <li>
             <button id="leave">Leave lobby</button>
         </li>
+        <li>
+            <textarea name="message" id="message-box" cols="30" rows="3"></textarea>
+            <button id="send-message">Send message</button>
+        </li>
     </ul>
 
 
     <!-- <button class="hello-button">Say hello to the server</button>
     <button class="test-button">locally add string to log</button> -->
-    <h1>Users connected</h1>
-    <div class="user-table">
-        <div class="user-row">
-            <div class="user-avatar"></div>
-            <div class="user-info">
-                <div class="user-name">User 1</div>
-                <!-- <div class="user-status">Online</div> -->
-            </div>
-        </div>
-        <div class="user-row">
-            <div class="user-avatar"></div>
-            <div class="user-info">
-                <div class="user-name">User 3</div>
-                <!-- <div class="user-status">Online</div> -->
-            </div>
-        </div>
-        <!-- Добавьте дополнительные пользователи по аналогии -->
-    </div>
+    <div class="chat-bounding-box" >
+        <div class="users-bounding-box">
 
-    <h1>чат</h1>
-    <div id="chat-box">
-        <p class="message">образец1</p>
-        <p class="message">образец2</p>
+            <h1>Users:</h1>
+            <div class="user-table">
+                <div class="user-row">
+                    <div class="user-avatar"></div>
+                    <div class="user-info">
+                        <div class="user-name">User 1</div>
+                        <!-- <div class="user-status">Online</div> -->
+                    </div>
+                </div>
+                <div class="user-row">
+                    <div class="user-avatar"></div>
+                    <div class="user-info">
+                        <div class="user-name">User 3</div>
+                        <!-- <div class="user-status">Online</div> -->
+                    </div>
+                </div>
+                <!-- Добавьте дополнительные пользователи по аналогии -->
+            </div>
+        </div>
+            
+        <!-- <h1>чат</h1> -->
+        <div id="chat-box">
+            <p class="message">образец1</p>
+            <p class="message">образец2</p>
+        </div>
+        <!-- <ul class="message-log">
+        </ul> -->
     </div>
-    <ul class="message-log">
-    </ul>
-</body>
-<script src="index.js"></script>
-</html>
+    </body>
+    <script src="index.js" type="module"></script>
+    <!-- <script src="client-router.js" type="module"></script> -->
+    </html>

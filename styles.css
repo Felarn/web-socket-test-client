@@ -17,6 +17,10 @@ body {
     /* border-color: red; */
 }
 
+.chat-bounding-box {
+    display: flex;
+}
+
 #chat-box {
     display: flex;
     flex-direction: column-reverse;
@@ -25,6 +29,7 @@ body {
     border-color: rgb(18, 15, 26);
     border-width: 2;
     background-color: aliceblue;
+    flex-grow: 1;
 }
 
 .message {
