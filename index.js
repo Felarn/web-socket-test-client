@@ -1,42 +1,60 @@
 import ClientRouter from "./client-router.js";
 // const router = new ClientRouter();
 
-// Create a WebSocket object and specify the server URL
-const socket = new WebSocket("ws://localhost:4444");
-// const socket = new WebSocket("wss://89.111.172.139:8080");
-// const socket = new WebSocket("wss://felarn.site");
+if (
+  window.location.hostname === "localhost" ||
+  window.location.hostname === "127.0.0.1"
+) {
+  // var serverURL = "ws://localhost:4444";
+  var serverURL = "ws://79.174.92.123:4444";
+  console.log(
+    "Сайт запущен на локальном сервере. Подключение к серверу" + serverURL
+  );
+} else {
+  var serverURL = "ws://79.174.92.123:4444";
+  console.log("Сайт развернут на хостинге");
+  // Подключение к хостингу
+}
+
+const socket = new WebSocket(serverURL);
+
 console.log("started");
 
-const state = { 
-ID: null, 
-playerName: "anon", 
-action: "none", 
-board:{
-'a1':'empty','a2':'empty','a3':'empty',
-'b1':'empty','b2':'empty','b3':'empty',
-'c1':'empty','c2':'empty','c3':'empty',
-},
-// playerSide:'empty',
-playerSide:'cross',
+const state = {
+  ID: null,
+  playerName: "anon",
+  action: "none",
+  board: {
+    a1: "empty",
+    a2: "empty",
+    a3: "empty",
+    b1: "empty",
+    b2: "empty",
+    b3: "empty",
+    c1: "empty",
+    c2: "empty",
+    c3: "empty",
+  },
+  // playerSide:'empty',
+  playerSide: "cross",
 };
 
 const updateBoard = () => {
-  const boardState=state.board
-  console.log(boardState)
-Object.entries(boardState)
-.forEach(([fieldName,fieldState]) =>  {
-  const field = document.getElementById(fieldName);
+  const boardState = state.board;
+  console.log(boardState);
+  Object.entries(boardState).forEach(([fieldName, fieldState]) => {
+    const field = document.getElementById(fieldName);
 
-  field.dataset.state = fieldState
-  if (fieldState !== 'empty'){
-    field.classList.remove('clickable')
-  } else {
-    field.classList.add('clickable')
-  }
-})
-}
+    field.dataset.state = fieldState;
+    if (fieldState !== "empty") {
+      field.classList.remove("clickable");
+    } else {
+      field.classList.add("clickable");
+    }
+  });
+};
 
-updateBoard(state.board)
+updateBoard(state.board);
 
 const UI = { input: {}, button: {} };
 
@@ -51,29 +69,29 @@ UI.input.playerName = document.querySelector("#player-name");
 UI.input.messageBox = document.querySelector("#message-box");
 UI.button.sendMessage = document.querySelector("#send-message");
 UI.messageLog = document.querySelector("#chat-box");
-UI.borard = document.querySelector('#board')
-UI.button.pickCross = assign('#pickSideCross')
-UI.button.pickCircle = assign('#pickSideCircle')
+UI.borard = document.querySelector("#board");
+UI.button.pickCross = assign("#pickSideCross");
+UI.button.pickCircle = assign("#pickSideCircle");
 
-UI.button.pickCross.addEventListener('click',()=>{
-  state.playerSide = 'cross'
-})
+UI.button.pickCross.addEventListener("click", () => {
+  state.playerSide = "cross";
+});
 
-UI.button.pickCircle.addEventListener('click',()=>{
-  state.playerSide = 'circle'
-})
+UI.button.pickCircle.addEventListener("click", () => {
+  state.playerSide = "circle";
+});
 
-UI.borard.addEventListener("click",(event)=>{
+UI.borard.addEventListener("click", (event) => {
   // const fieldState = event.target.dataset.state
-  const fieldName = event.target.id
-  const fieldState = state.board[fieldName]
+  const fieldName = event.target.id;
+  const fieldState = state.board[fieldName];
 
-  if (fieldState === 'empty'){
-    state.board[fieldName] = state.playerSide
+  if (fieldState === "empty") {
+    state.board[fieldName] = state.playerSide;
   }
-  updateBoard(state.board)
-  socket.send(JSON.stringify({action:'turn',state}))
-})
+  updateBoard(state.board);
+  socket.send(JSON.stringify({ action: "turn", state }));
+});
 
 UI.button.sendMessage.addEventListener("click", () => {
   state.chatMessage = UI.input.messageBox.value;
@@ -81,8 +99,6 @@ UI.button.sendMessage.addEventListener("click", () => {
   state.action = "chat";
   socket.send(JSON.stringify(state));
 });
-
-
 
 UI.button.joinGame.addEventListener("click", () => {
   state.action = "join";
@@ -113,7 +129,7 @@ socket.onopen = function (event) {
 
 // Event handler for incoming messages from the server
 socket.onmessage = function (event) {
-  const data = JSON.parse(event.data)
+  const data = JSON.parse(event.data);
   console.log("Received message from server:", event.data);
   const newItem = document.createElement("div");
   newItem.classList.add("message");
@@ -121,11 +137,11 @@ socket.onmessage = function (event) {
   UI.messageLog.appendChild(newItem);
 
   // const data = JSON.parse(event.data)
-  if (data.action === 'turn'){
-    state.board = data.state.board
-    console.log('new board state')
+  if (data.action === "turn") {
+    state.board = data.state.board;
+    console.log("new board state");
 
-    updateBoard()
+    updateBoard();
   }
 };
 
