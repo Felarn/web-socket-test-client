@@ -6,7 +6,7 @@ if (
   window.location.hostname === "127.0.0.1"
 ) {
   // var serverURL = "ws://localhost:4444";
-  var serverURL = "ws://79.174.92.123:4444";
+  var serverURL = "wss://79.174.92.123:4444";
   console.log(
     "Сайт запущен на локальном сервере. Подключение к серверу" + serverURL
   );
