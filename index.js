@@ -1,12 +1,13 @@
 import ClientRouter from "./client-router.js";
 // const router = new ClientRouter();
+const reconnectionTimeout = 1000;
 
 if (
   window.location.hostname === "localhost" ||
   window.location.hostname === "127.0.0.1"
 ) {
-  // var serverURL = "ws://localhost:4444";
-  var serverURL = "ws://79.174.92.123:4444";
+  var serverURL = "ws://localhost:4444";
+  // var serverURL = "wss://felarn.site/";
   console.log(
     "Сайт запущен на локальном сервере. Подключение к серверу" + serverURL
   );
@@ -16,10 +17,6 @@ if (
   console.log("Сайт развернут на хостинге");
   // Подключение к хостингу
 }
-
-const socket = new WebSocket(serverURL);
-
-console.log("started");
 
 const state = {
   ID: null,
@@ -74,86 +71,106 @@ UI.borard = document.querySelector("#board");
 UI.button.pickCross = assign("#pickSideCross");
 UI.button.pickCircle = assign("#pickSideCircle");
 
-UI.button.pickCross.addEventListener("click", () => {
-  state.playerSide = "cross";
-});
+const connectServer = () => {
+  const socket = new WebSocket(serverURL);
 
-UI.button.pickCircle.addEventListener("click", () => {
-  state.playerSide = "circle";
-});
+  UI.button.pickCross.addEventListener("click", () => {
+    state.playerSide = "cross";
+  });
 
-UI.borard.addEventListener("click", (event) => {
-  // const fieldState = event.target.dataset.state
-  const fieldName = event.target.id;
-  const fieldState = state.board[fieldName];
+  UI.button.pickCircle.addEventListener("click", () => {
+    state.playerSide = "circle";
+  });
 
-  if (fieldState === "empty") {
-    state.board[fieldName] = state.playerSide;
-  }
-  updateBoard(state.board);
-  socket.send(JSON.stringify({ action: "turn", state }));
-});
+  UI.borard.addEventListener("click", (event) => {
+    // const fieldState = event.target.dataset.state
+    const fieldName = event.target.id;
+    const fieldState = state.board[fieldName];
 
-UI.button.sendMessage.addEventListener("click", () => {
-  state.chatMessage = UI.input.messageBox.value;
-  UI.input.messageBox.value = "";
-  state.action = "chat";
-  socket.send(JSON.stringify(state));
-});
+    if (fieldState === "empty") {
+      state.board[fieldName] = state.playerSide;
+    }
+    updateBoard(state.board);
+    socket.send(JSON.stringify({ action: "turn", state }));
+  });
 
-UI.button.joinGame.addEventListener("click", () => {
-  state.action = "join";
-  state.playerName = UI.input.playerName.value;
-  state.gameID = UI.input.gameID.value;
-  socket.send(JSON.stringify(state));
-});
+  UI.button.sendMessage.addEventListener("click", () => {
+    state.chatMessage = UI.input.messageBox.value;
+    UI.input.messageBox.value = "";
+    state.action = "chat";
+    socket.send(JSON.stringify(state));
+  });
 
-UI.button.leaveLobby.addEventListener("click", () => {
-  state.action = "leave";
-  state.playerName = UI.input.playerName.value;
-  state.gameID = UI.input.gameID.value;
-  socket.send(JSON.stringify(state));
-});
+  UI.button.joinGame.addEventListener("click", () => {
+    state.action = "join";
+    state.playerName = UI.input.playerName.value;
+    state.gameID = UI.input.gameID.value;
+    socket.send(JSON.stringify(state));
+  });
 
-UI.button.newGame.addEventListener("click", () => {
-  state.action = "newGame";
-  state.playerName = UI.input.playerName.value;
-  socket.send(JSON.stringify(state));
-});
+  UI.button.leaveLobby.addEventListener("click", () => {
+    state.action = "leave";
+    state.playerName = UI.input.playerName.value;
+    state.gameID = UI.input.gameID.value;
+    socket.send(JSON.stringify(state));
+  });
 
-// Event handler for when the WebSocket connection is established
-socket.onopen = function (event) {
-  UI.connectionStatus.classList = ["online"];
-  // console.log("WebSocket connection established.");
-  socket.send(JSON.stringify(state));
+  UI.button.newGame.addEventListener("click", () => {
+    state.action = "newGame";
+    state.playerName = UI.input.playerName.value;
+    socket.send(JSON.stringify(state));
+  });
+
+  console.log("started");
+  socket.onopen = function (event) {
+    UI.connectionStatus.classList = ["online"];
+    console.log("WebSocket connection established");
+    socket.send(JSON.stringify(state));
+  };
+
+  // Event handler for incoming messages from the server
+  socket.onmessage = function (event) {
+    const data = JSON.parse(event.data);
+    console.log("Received message from server:", event.data);
+    const newItem = document.createElement("div");
+    newItem.classList.add("message");
+    newItem.append(document.createTextNode("server said: " + event.data));
+    UI.messageLog.appendChild(newItem);
+
+    // const data = JSON.parse(event.data)
+    if (data.action === "turn") {
+      state.board = data.state.board;
+      console.log("new board state");
+
+      updateBoard();
+    }
+  };
+
+  // Event handler for WebSocket errors
+  socket.onerror = function (error) {
+    console.log(
+      "connection error, attempting to reconnect in" + reconnectionTimeout
+    );
+    setTimeout(() => {
+      console.log("attempting to reconnect");
+      connectServer();
+    }, reconnectionTimeout);
+    UI.connectionStatus.classList = ["offline"];
+    console.error("WebSocket error:", error);
+  };
+
+  // Event handler for when the WebSocket connection is closed
+  socket.onclose = function (event) {
+    console.log(
+      "connection closed, attempting to reconnect in" + reconnectionTimeout
+    );
+    setTimeout(() => {
+      console.log("attempting to reconnect");
+      connectServer();
+    }, reconnectionTimeout);
+    UI.connectionStatus.classList = ["offline"];
+    console.log("WebSocket connection closed:", event);
+  };
 };
 
-// Event handler for incoming messages from the server
-socket.onmessage = function (event) {
-  const data = JSON.parse(event.data);
-  console.log("Received message from server:", event.data);
-  const newItem = document.createElement("div");
-  newItem.classList.add("message");
-  newItem.append(document.createTextNode("server said: " + event.data));
-  UI.messageLog.appendChild(newItem);
-
-  // const data = JSON.parse(event.data)
-  if (data.action === "turn") {
-    state.board = data.state.board;
-    console.log("new board state");
-
-    updateBoard();
-  }
-};
-
-// Event handler for WebSocket errors
-socket.onerror = function (error) {
-  UI.connectionStatus.classList = ["offline"];
-  console.error("WebSocket error:", error);
-};
-
-// Event handler for when the WebSocket connection is closed
-socket.onclose = function (event) {
-  UI.connectionStatus.classList = ["offline"];
-  console.log("WebSocket connection closed:", event);
-};
+connectServer();
