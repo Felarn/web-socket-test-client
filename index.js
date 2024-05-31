@@ -11,7 +11,7 @@ if (
     "Сайт запущен на локальном сервере. Подключение к серверу" + serverURL
   );
 } else {
-  var serverURL = "wss://felarn.site/";
+  var serverURL = "ws://felarn.site/";
   // var serverURL = "wss://felarn.ru/";
   console.log("Сайт развернут на хостинге");
   // Подключение к хостингу
