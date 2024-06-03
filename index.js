@@ -7,6 +7,7 @@ if (
   window.location.hostname === "127.0.0.1"
 ) {
   var serverURL = "ws://localhost:4444";
+  // var serverURL = "wss://felarn.ru/";
   // var serverURL = "wss://felarn.site/";
   console.log(
     "Сайт запущен на локальном сервере. Подключение к серверу" + serverURL
@@ -121,8 +122,25 @@ const connectServer = () => {
     socket.send(JSON.stringify(state));
   });
 
+  const identification = (connection) => {
+    if (sessionStorage.getItem("userID")) {
+      const userID = sessionStorage.getItem("userID");
+      connection.send(
+        JSON.stringify({ action: "identification", payload: { userID } })
+      );
+      return;
+    }
+    connection.send(JSON.stringify({ action: "registeration", payload: null }));
+    return;
+  };
+
+  const rememberID = ({ userID }) => {
+    sessionStorage.setItem("userID", userID);
+  };
+
   console.log("started");
   socket.onopen = function (event) {
+    identification(socket);
     UI.connectionStatus.classList = ["online"];
     console.log("WebSocket connection established");
     socket.send(JSON.stringify(state));
@@ -136,6 +154,10 @@ const connectServer = () => {
     newItem.classList.add("message");
     newItem.append(document.createTextNode("server said: " + event.data));
     UI.messageLog.appendChild(newItem);
+
+    if (data.action === "registered") {
+      rememberID(data.payload);
+    }
 
     // const data = JSON.parse(event.data)
     if (data.action === "turn") {
@@ -151,10 +173,10 @@ const connectServer = () => {
     console.log(
       "connection error, attempting to reconnect in" + reconnectionTimeout
     );
-    setTimeout(() => {
-      console.log("attempting to reconnect");
-      connectServer();
-    }, reconnectionTimeout);
+    // setTimeout(() => {
+    //   console.log("attempting to reconnect");
+    //   connectServer();
+    // }, reconnectionTimeout);
     UI.connectionStatus.classList = ["offline"];
     console.error("WebSocket error:", error);
   };
@@ -164,10 +186,10 @@ const connectServer = () => {
     console.log(
       "connection closed, attempting to reconnect in" + reconnectionTimeout
     );
-    setTimeout(() => {
-      console.log("attempting to reconnect");
-      connectServer();
-    }, reconnectionTimeout);
+    // setTimeout(() => {
+    //   console.log("attempting to reconnect");
+    //   connectServer();
+    // }, reconnectionTimeout);
     UI.connectionStatus.classList = ["offline"];
     console.log("WebSocket connection closed:", event);
   };
