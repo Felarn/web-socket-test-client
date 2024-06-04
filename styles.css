@@ -79,7 +79,7 @@ h1 {
     color: #888;
 }
 
-table {
+#board>table {
     border-collapse: collapse;
     font-family: Arial, sans-serif;
     font-size: 30px;
@@ -131,4 +131,94 @@ td {
 
 .hidden {
     display: none;
+}
+
+body {
+    background-color: #cec9c4;
+}
+
+/* ====== список комнат======== */
+.room-list {
+    width: 400px;
+    height: 200px;
+    overflow-y: scroll;
+    border: 1px solid #f2fdff;
+    background: aliceblue;
+    padding: 5px;
+}
+
+.room:hover {
+    background-color: #f0f0f0;
+    border: 1px solid #aaa;
+}
+
+.room:active {
+    background-color: #f1eda9;
+    border: 1px solid #aaa;
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.5);
+}
+
+/* ======== комната ============ */
+.room {
+    width: 350px;
+    height: 50px;
+    padding: 12px;
+    margin: 2px;
+    border: 1px solid #999;
+    position: relative;
+    border-radius: 10px;
+    background: #bbb;
+    cursor: pointer;
+}
+
+.room h2 {
+    position: absolute;
+    top: -15px;
+}
+
+.creator {
+    position: absolute;
+    top: -10px;
+    right: 10px;
+}
+
+.participants {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+}
+
+.id {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    color: grey;
+    font-style: italic;
+    left: 10%;
+    bottom: -10px;
+    /* right: 90%; */
+}
+
+/* ==================== */
+.sidePicker {
+    text-align: center;
+    font-size: 18px;
+}
+
+.sidePicker>tbody>tr>td {
+    height: 30px;
+}
+
+.sidePickerName {
+    background-color: aliceblue;
+}
+
+.chat {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.console {
+    font-size: 15px;
+    font-style: italic;
 }

@@ -1,28 +1,44 @@
 import ClientRouter from "./client-router.js";
-// const router = new ClientRouter();
+import createRoom from "./src/createRoom.js";
+import getServerUrl from "./src/getServerUrl.js";
+
+// константы
 const reconnectionTimeout = 1000;
+const serverURL = getServerUrl();
 
-if (
-  window.location.hostname === "localhost" ||
-  window.location.hostname === "127.0.0.1"
-) {
-  var serverURL = "ws://localhost:4444";
-  // var serverURL = "wss://felarn.ru/";
-  // var serverURL = "wss://felarn.site/";
-  console.log(
-    "Сайт запущен на локальном сервере. Подключение к серверу" + serverURL
-  );
-} else {
-  var serverURL = "wss://felarn.site/";
-  // var serverURL = "wss://felarn.ru/";
-  console.log("Сайт развернут на хостинге");
-  // Подключение к хостингу
-}
+const roomsMock = [
+  {
+    roomName: "комната",
+    host: "создатель",
+    playerCount: 3,
+    id: "670b605d-c4e4-4678-8f9e-f67087e393da",
+  },
+  {
+    roomName: "моя комнатушка",
+    host: "ЯЯЯ",
+    playerCount: 2,
+    id: "c38d9dec-f031-46d9-9aac-86e40241a3a9",
+  },
+  {
+    roomName: "еще комната",
+    host: "юзеннейм",
+    playerCount: 1,
+    id: "b324f8a7-1bdd-4af5-980d-0d10a0e608dc",
+  },
+  {
+    roomName: "все сюда",
+    host: "хостище",
+    playerCount: 6,
+    id: "4ee3b07d-1802-44bf-8086-54b855d1744c",
+  },
+];
 
+// исходное состояние
 const state = {
   ID: null,
+  userCondition: "outOfGame",
+  playerSide: null,
   playerName: "anon",
-  action: "none",
   board: {
     a1: "empty",
     a2: "empty",
@@ -36,6 +52,11 @@ const state = {
   },
   // playerSide:'empty',
   playerSide: "cross",
+};
+
+// функции
+const rememberID = ({ userID }) => {
+  sessionStorage.setItem("userID", userID);
 };
 
 const updateBoard = () => {
@@ -53,24 +74,84 @@ const updateBoard = () => {
   });
 };
 
-updateBoard(state.board);
+const updateVisibility = () => {
+  console.log(state.userCondition);
+  Object.values(visibilityDomens).forEach((domen) => {
+    if (domen.classList.contains(state.userCondition)) {
+      domen.classList.remove("hidden");
+    } else {
+      domen.classList.add("hidden");
+    }
+  });
+};
 
-const UI = { input: {}, button: {} };
+const identification = (connection) => {
+  const userID = sessionStorage.getItem("userID");
+  if (userID) {
+    const payload = { userID, userName: state.playerName };
+    connection.send(action("identification", payload));
+  } else {
+    const payload = { userName: state.playerName };
+    connection.send(action("registration", payload));
+  }
+};
+
+const action = (action, payload = null) => {
+  return JSON.stringify({ action, payload });
+};
+
+const showChatMessage = (message) => {
+  const newItem = document.createElement("div");
+  newItem.classList.add("message");
+  if (message.action === "chat") {
+    newItem.classList.add("chat");
+    const text = message.payload.message;
+    const from = message.payload.from;
+    newItem.append(document.createTextNode(`${from}: ${text}`));
+  } else {
+    newItem.classList.add("console");
+    newItem.append(document.createTextNode("action: " + message.action));
+    newItem.append(document.createElement("br"));
+    newItem.append(
+      document.createTextNode("payload: " + JSON.stringify(message.payload))
+    );
+  }
+  UI.messageLog.appendChild(newItem);
+};
 
 const assign = (query) => document.querySelector(query);
 
-UI.connectionStatus = document.querySelector("#status");
-UI.input.gameID = document.querySelector("#ID-to-join");
-UI.button.newGame = document.querySelector("#new-game");
-UI.button.joinGame = document.querySelector("#join");
-UI.button.leaveLobby = document.querySelector("#leave");
-UI.input.playerName = document.querySelector("#player-name");
-UI.input.messageBox = document.querySelector("#message-box");
-UI.button.sendMessage = document.querySelector("#send-message");
-UI.messageLog = document.querySelector("#chat-box");
-UI.borard = document.querySelector("#board");
+//  ================= ссылки на UI =================
+const UI = { input: {}, button: {} };
+
+UI.connectionStatus = assign("#status");
+UI.button.newGame = assign("#new-game");
+UI.button.joinGame = assign("#join");
+UI.button.leaveLobby = assign("#leave");
+UI.button.sendMessage = assign("#send-message");
+UI.input.gameID = assign("#ID-to-join");
+UI.input.playerName = assign("#player-name");
+UI.input.messageBox = assign("#message-box");
+UI.messageLog = assign("#chat-box");
+UI.board = assign("#board");
 UI.button.pickCross = assign("#pickSideCross");
 UI.button.pickCircle = assign("#pickSideCircle");
+UI.gameList = assign("#gameList");
+UI.playerList = assign("#playerList");
+
+const visibilityDomens = {
+  name: UI.input.playerName,
+  main: assign("#main-menu"),
+  lobby: assign("#lobby"),
+  game: assign("#game"),
+  chat: assign("#chat-input"),
+};
+
+// ============ инициализация ==================
+state.playerName = UI.input.playerName.value || "Anon";
+updateBoard(state.board);
+updateVisibility();
+roomsMock.forEach((room) => createRoom(UI.gameList, room));
 
 const connectServer = () => {
   const socket = new WebSocket(serverURL);
@@ -83,7 +164,7 @@ const connectServer = () => {
     state.playerSide = "circle";
   });
 
-  UI.borard.addEventListener("click", (event) => {
+  UI.board.addEventListener("click", (event) => {
     // const fieldState = event.target.dataset.state
     const fieldName = event.target.id;
     const fieldState = state.board[fieldName];
@@ -91,88 +172,77 @@ const connectServer = () => {
     if (fieldState === "empty") {
       state.board[fieldName] = state.playerSide;
     }
+
     updateBoard(state.board);
-    socket.send(JSON.stringify({ action: "turn", state }));
+    socket.send(action("turn", { board: state.board }));
   });
 
   UI.button.sendMessage.addEventListener("click", () => {
-    state.chatMessage = UI.input.messageBox.value;
+    const chatMessage = UI.input.messageBox.value;
     UI.input.messageBox.value = "";
-    state.action = "chat";
-    socket.send(JSON.stringify(state));
+    socket.send(action("chat", { message: chatMessage }));
   });
 
   UI.button.joinGame.addEventListener("click", () => {
-    state.action = "join";
-    state.playerName = UI.input.playerName.value;
-    state.gameID = UI.input.gameID.value;
-    socket.send(JSON.stringify(state));
+    const gameID = UI.input.gameID.value;
+    socket.send(action("join", { gameID: gameID }));
   });
 
   UI.button.leaveLobby.addEventListener("click", () => {
-    state.action = "leave";
-    state.playerName = UI.input.playerName.value;
-    state.gameID = UI.input.gameID.value;
-    socket.send(JSON.stringify(state));
+    socket.send(action("leave"));
   });
 
   UI.button.newGame.addEventListener("click", () => {
-    state.action = "newGame";
-    state.playerName = UI.input.playerName.value;
-    socket.send(JSON.stringify(state));
+    socket.send(action("createGame"));
   });
 
-  const identification = (connection) => {
-    if (sessionStorage.getItem("userID")) {
-      const userID = sessionStorage.getItem("userID");
-      connection.send(
-        JSON.stringify({ action: "identification", payload: { userID } })
-      );
-      return;
-    }
-    connection.send(JSON.stringify({ action: "registeration", payload: null }));
-    return;
-  };
+  UI.input.playerName.addEventListener("input", (event) => {
+    state.playerName = event.target.value;
+    socket.send(action("rename", { userName: state.playerName }));
+  });
 
-  const rememberID = ({ userID }) => {
-    sessionStorage.setItem("userID", userID);
-  };
-
-  console.log("started");
   socket.onopen = function (event) {
     identification(socket);
     UI.connectionStatus.classList = ["online"];
     console.log("WebSocket connection established");
-    socket.send(JSON.stringify(state));
   };
 
-  // Event handler for incoming messages from the server
+  // обработка входящих сообщений
   socket.onmessage = function (event) {
     const data = JSON.parse(event.data);
+    const payload = data.payload;
     console.log("Received message from server:", event.data);
-    const newItem = document.createElement("div");
-    newItem.classList.add("message");
-    newItem.append(document.createTextNode("server said: " + event.data));
-    UI.messageLog.appendChild(newItem);
+    showChatMessage(data);
 
-    if (data.action === "registered") {
-      rememberID(data.payload);
-    }
+    switch (data.action) {
+      case "registered":
+        rememberID(payload);
+        break;
 
-    // const data = JSON.parse(event.data)
-    if (data.action === "turn") {
-      state.board = data.state.board;
-      console.log("new board state");
+      case "identified":
+        state.userCondition = payload.userCondition;
+        state.playerName = payload.userName;
+        UI.input.playerName.value = state.playerName;
+        updateVisibility();
+        break;
 
-      updateBoard();
+      case "turn":
+        state.board = payload.board;
+        updateBoard();
+        break;
+
+      case "newState":
+        state.userCondition = payload.userCondition;
+        updateVisibility();
+        break;
+
+      default:
+        break;
     }
   };
 
-  // Event handler for WebSocket errors
   socket.onerror = function (error) {
-    console.log(
-      "connection error, attempting to reconnect in" + reconnectionTimeout
-    );
+    console.log("connection ERROR, reconnect in" + reconnectionTimeout);
     // setTimeout(() => {
     //   console.log("attempting to reconnect");
     //   connectServer();
@@ -181,17 +251,13 @@ const connectServer = () => {
     console.error("WebSocket error:", error);
   };
 
-  // Event handler for when the WebSocket connection is closed
   socket.onclose = function (event) {
-    console.log(
-      "connection closed, attempting to reconnect in" + reconnectionTimeout
-    );
+    console.log("connection CLOSED, reconnect in" + reconnectionTimeout);
     // setTimeout(() => {
     //   console.log("attempting to reconnect");
     //   connectServer();
     // }, reconnectionTimeout);
     UI.connectionStatus.classList = ["offline"];
-    console.log("WebSocket connection closed:", event);
   };
 };
 
