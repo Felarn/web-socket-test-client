@@ -1,3 +1,4 @@
+import action from "./src/action.js";
 import ClientRouter from "./client-router.js";
 import createRoom from "./src/createRoom.js";
 import getServerUrl from "./src/getServerUrl.js";
@@ -85,6 +86,23 @@ const updateVisibility = () => {
   });
 };
 
+const updateGameList = (connection) => {
+  console.log("updating room list");
+
+  // if (state.gameList.length === 0) {
+
+  //   UI.gameList.cl
+  //   return}
+
+  const newList = document.createElement("div");
+  state.gameList.forEach((roomInfo) =>
+    createRoom(newList, roomInfo, connection)
+  );
+  console.log(newList);
+  UI.gameList.replaceChildren(...newList.children);
+  // UI.gameList.append(newList);
+};
+
 const identification = (connection) => {
   const userID = sessionStorage.getItem("userID");
   if (userID) {
@@ -94,12 +112,6 @@ const identification = (connection) => {
     const payload = { userName: state.playerName };
     connection.send(action("registration", payload));
   }
-};
-
-const action = (action, payload = null) => {
-  const message = JSON.stringify({ action, payload });
-  console.log(`Sending message: ${message}`);
-  return message;
 };
 
 const showChatMessage = (message) => {
@@ -153,7 +165,7 @@ const visibilityDomens = {
 state.playerName = UI.input.playerName.value || "Anon";
 updateBoard(state.board);
 updateVisibility();
-roomsMock.forEach((room) => createRoom(UI.gameList, room));
+// roomsMock.forEach((room) => createRoom(UI.gameList, room));
 
 const connectServer = () => {
   const socket = new WebSocket(serverURL);
@@ -236,6 +248,11 @@ const connectServer = () => {
       case "newState":
         state.userCondition = payload.userCondition;
         updateVisibility();
+        break;
+
+      case "roomsList":
+        state.gameList = payload;
+        updateGameList(socket);
         break;
 
       default:
