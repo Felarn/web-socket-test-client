@@ -143,13 +143,15 @@ UI.button.newGame = assign("#new-game");
 UI.button.joinGame = assign("#join");
 UI.button.leaveLobby = assign("#leave");
 UI.button.sendMessage = assign("#send-message");
+UI.button.startMatch = assign("#startMatch");
 UI.input.gameID = assign("#ID-to-join");
 UI.input.playerName = assign("#player-name");
 UI.input.messageBox = assign("#message-box");
 UI.messageLog = assign("#chat-box");
 UI.board = assign("#board");
-UI.button.pickCross = assign("#pickSideCross");
-UI.button.pickCircle = assign("#pickSideCircle");
+UI.button.pickWhite = assign("#pickWhite");
+UI.button.pickBlack = assign("#pickBlack");
+UI.button.pickSpectator = assign("#pickSpectator");
 UI.gameList = assign("#gameList");
 UI.playerList = assign("#playerList");
 
@@ -170,12 +172,23 @@ updateVisibility();
 const connectServer = () => {
   const socket = new WebSocket(serverURL);
 
-  UI.button.pickCross.addEventListener("click", () => {
-    state.playerSide = "cross";
+  UI.button.startMatch.addEventListener("click", () => {
+    socket.send(action("startMatch"));
   });
 
-  UI.button.pickCircle.addEventListener("click", () => {
-    state.playerSide = "circle";
+  UI.button.pickWhite.addEventListener("click", () => {
+    state.playerSide = "white";
+    socket.send(action("pickSide", { side: state.playerSide }));
+  });
+
+  UI.button.pickBlack.addEventListener("click", () => {
+    state.playerSide = "black";
+    socket.send(action("pickSide", { side: state.playerSide }));
+  });
+
+  UI.button.pickSpectator.addEventListener("click", () => {
+    state.playerSide = "spectator";
+    socket.send(action("pickSide", { side: state.playerSide }));
   });
 
   UI.board.addEventListener("click", (event) => {
@@ -188,7 +201,7 @@ const connectServer = () => {
     }
 
     updateBoard(state.board);
-    socket.send(action("turn", { board: state.board }));
+    socket.send(action("makeTurn", { board: state.board }));
   });
 
   UI.button.sendMessage.addEventListener("click", () => {
@@ -240,12 +253,12 @@ const connectServer = () => {
         updateVisibility();
         break;
 
-      case "turn":
+      case "gameState":
         state.board = payload.board;
         updateBoard();
         break;
 
-      case "newState":
+      case "newUserCondition":
         state.userCondition = payload.userCondition;
         updateVisibility();
         break;

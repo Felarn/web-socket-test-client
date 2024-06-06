@@ -116,14 +116,16 @@ td {
     cursor: pointer;
 }
 
-[data-state="cross"]::after {
+/* [data-state="cross"]::after { */
+[data-state="white"]::after {
     /* background-color: #06c200; */
     font-size: 60px;
     content: "✕";
     /* content: "◯"; */
 }
 
-[data-state="circle"]::after {
+/* [data-state="circle"]::after { */
+[data-state="black"]::after {
     /* background-color: #06c200; */
     font-size: 60px;
     content: "◯";
