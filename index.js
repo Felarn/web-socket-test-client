@@ -97,9 +97,9 @@ const identification = (connection) => {
 };
 
 const action = (action, payload = null) => {
-  const message = JSON.stringify({ action, payload };
+  const message = JSON.stringify({ action, payload });
   console.log(`Sending message: ${message}`);
-  return message);
+  return message;
 };
 
 const showChatMessage = (message) => {
