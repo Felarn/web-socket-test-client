@@ -1,177 +1,177 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
-    <link rel="stylesheet" href="styles.css" />
-  </head>
 
-  <body>
-    <p id="status" class="offline">status</p>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Document</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
 
+<body>
+  <p id="status" class="offline">status</p>
+
+  <div>
+    <input id="player-name" class="outOfGame inLobby anon" type="text" placeholder="Enter your name" />
+  </div>
+
+  <!-- ============ видно на главном экране ================ -->
+  <div id="main-menu" class="outOfGame">
     <div>
-      <input
-        id="player-name"
-        class="outOfGame inLobby anon"
-        type="text"
-        placeholder="Enter your name"
-      />
+      <button id="new-game">Start new game</button>
+      <input id="game-name" type="text" placeholder="введите название комнаты" />
+    </div>
+    <div>
+      <button id="join">Join lobby</button>
+      <input id="ID-to-join" type="text" placeholder="game ID" />
     </div>
 
-    <!-- ============ видно на главном экране ================ -->
-    <div id="main-menu" class="outOfGame">
-      <div>
-        <button id="new-game">Start new game</button>
-        <input
-          id="game-name"
-          type="text"
-          placeholder="введите название комнаты"
-        />
-      </div>
-      <div>
-        <button id="join">Join lobby</button>
-        <input id="ID-to-join" type="text" placeholder="game ID" />
-      </div>
-
-      <div id="gameList" class="room-list">
-        <!-- <div class="room">
+    <div id="gameList" class="room-list">
+      <!-- <div class="room">
                 <h2>Комната 1</h2>
                 <p class="creator">Создатель: имясоздателя</p>
                 <p class="participants">Количество участников: 3</p>
                 <p class="id">ID: 6d8b4dde-3ac6-4f57-92b1-679810c643a4</p>
             </div>-->
-      </div>
+    </div>
+  </div>
+
+  <!-- ================== видно в лобби ==================== -->
+  <div id="lobby" class="inLobby">
+    <input id="room-name" class="outOfGame inLobby" type="text" placeholder="переименовать" />
+    <div>
+      <button id="leave">покинуть комнату</button>
     </div>
 
-    <!-- ================== видно в лобби ==================== -->
-    <div id="lobby" class="inLobby">
-      <input
-        id="room-name"
-        class="outOfGame inLobby"
-        type="text"
-        placeholder="переименовать"
-      />
-      <div>
-        <button id="leave">покинуть комнату</button>
-      </div>
-
-      <!-- <div >
+    <!-- <div >
         <button id="pickSideCross" class="inLobby">играть за ✕</button> 
         <button id="pickSideCircle" class="inLobby">играть за ◯</button> 
     </div> -->
 
-      <table class="sidePicker">
-        <tbody>
-          <tr>
-            <td colspan="2">Выбор стороны</td>
-          </tr>
-          <tr>
-            <td>черные ✕</td>
-            <td>белые ◯</td>
-          </tr>
-          <tr>
-            <td class="sidePickerName">иван</td>
-            <td class="sidePickerName">вася</td>
-          </tr>
-          <tr>
-            <td><button id="pickWhite">выбрать</button></td>
-            <td><button id="pickBlack">выбрать</button></td>
+    <table class="sidePicker">
+      <tbody>
+        <tr>
+          <td colspan="2">Выбор стороны</td>
+        </tr>
+        <tr>
+          <td>черные ✕</td>
+          <td>белые ◯</td>
+        </tr>
+        <tr>
+          <td class="sidePickerName">иван</td>
+          <td class="sidePickerName">вася</td>
+        </tr>
+        <tr>
+          <td><button id="pickWhite">выбрать</button></td>
+          <td><button id="pickBlack">выбрать</button></td>
 
-          </tr>
-          <tr>
-            <td colspan="2">
-              <td><button id="pickSpectator">наблюдать</button></td>
-            </td>
-          </tr>
-          <tr>
-            <td colspan="2">
-              <button id="startMatch" class="inLobby">начать матч</button>
-            </td>
-          </tr>
-        </tbody>
+        </tr>
+        <tr>
+          <td colspan="2">
+          <td><button id="pickSpectator">наблюдать</button></td>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2">
+            <button id="startMatch" class="inLobby">начать матч</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ================== видно в игре ===================== -->
+  <div id="game" class="inGame">
+    <header id='turnInfoHeader'>
+      <div id="turnColor"></div>
+      <div id="activePlayer"> </div>
+    </header>
+
+    <div id="board">
+      <table>
+        <tr>
+          <td class="number">3</td>
+          <td id="a3" class="clickable"></td>
+          <td id="b3" class="vertical clickable"></td>
+          <td id="c3" class="clickable"></td>
+        </tr>
+        <tr>
+          <td class="number">2</td>
+          <td id="a2" class="horizontal clickable"></td>
+          <td id="b2" class="vertical horizontal clickable"></td>
+          <td id="c2" class="horizontal clickable"></td>
+        </tr>
+        <tr>
+          <td class="number clickable">1</td>
+          <td id="a1" class="clickable"></td>
+          <td id="b1" class="vertical clickable"></td>
+          <td id="c1" class="clickable"></td>
+        </tr>
+        <tr>
+          <td class="empty"></td>
+          <td class="letter">a</td>
+          <td class="letter">b</td>
+          <td class="letter">c</td>
+        </tr>
       </table>
     </div>
 
-    <!-- ================== видно в игре ===================== -->
-    <div id="game" class="inGame">
-      <div id="board">
-        <table>
-          <tr>
-            <td class="number">3</td>
-            <td id="a3" class="clickable"></td>
-            <td id="b3" class="vertical clickable"></td>
-            <td id="c3" class="clickable"></td>
-          </tr>
-          <tr>
-            <td class="number">2</td>
-            <td id="a2" class="horizontal clickable"></td>
-            <td id="b2" class="vertical horizontal clickable"></td>
-            <td id="c2" class="horizontal clickable"></td>
-          </tr>
-          <tr>
-            <td class="number clickable">1</td>
-            <td id="a1" class="clickable"></td>
-            <td id="b1" class="vertical clickable"></td>
-            <td id="c1" class="clickable"></td>
-          </tr>
-          <tr>
-            <td class="empty"></td>
-            <td class="letter">a</td>
-            <td class="letter">b</td>
-            <td class="letter">c</td>
-          </tr>
-        </table>
-      </div>
+    <div>
+      <button id="win">победить</button>
+      <button id="surrender">сдаться</button>
 
-      <div>
-        <button id="win">победить</button>
-        <button id="surrender">сдаться</button>
-
-        <button id="finishTurn">отдать ход</button>
-      </div>
-      <p></p>
+      <button id="finishTurn">отдать ход</button>
     </div>
+    <p></p>
+  </div>
 
-    <!-- ================== видно в лобби и в игре ===================== -->
-    <div id="chat-input" class="inLobby inGame">
-      <div>
-        <textarea name="message" id="message-box" cols="30" rows="3"></textarea>
-        <button id="send-message">Send message</button>
-      </div>
+  <!-- ================== победный экран ===================== -->
+  <div id="resultScreen" class="onResultScreen">
+    <div id="winner">ПОБЕДА</div>
+    <div id="looser">ПОРАЖЕНИЕ</div>
+    <div id="пат">НИЧЬЯ</div>
+  </div>
+
+  <!-- ========= видно в лобби, в игре и на победном экране ===================== -->
+  <div id="chat-input" class="inLobby inGame">
+    <div>
+      <textarea name="message" id="message-box" cols="30" rows="3"></textarea>
+      <button id="send-message">Send message</button>
     </div>
+  </div>
 
-    <!-- ================== видно всегда ===================== -->
-    <div class="chat-bounding-box">
-      <div class="users-bounding-box">
-        <h1 class="hidden">Users:</h1>
-        <div class="user-table hidden">
-          <div class="user-row">
-            <div class="user-avatar"></div>
-            <div class="user-info">
-              <div class="user-name">User 1</div>
-              <!-- <div class="user-status">Online</div> -->
-            </div>
+  <!-- ================== видно всегда ===================== -->
+  <div class="chat-bounding-box">
+    <div class="users-bounding-box">
+      <h1 class="hidden">Users:</h1>
+      <div class="user-table hidden">
+        <div class="user-row">
+          <div class="user-avatar"></div>
+          <div class="user-info">
+            <div class="user-name">User 1</div>
+            <!-- <div class="user-status">Online</div> -->
           </div>
-          <div class="user-row">
-            <div class="user-avatar"></div>
-            <div class="user-info">
-              <div class="user-name">User 3</div>
-              <!-- <div class="user-status">Online</div> -->
-            </div>
+        </div>
+        <div class="user-row">
+          <div class="user-avatar"></div>
+          <div class="user-info">
+            <div class="user-name">User 3</div>
+            <!-- <div class="user-status">Online</div> -->
           </div>
         </div>
       </div>
-
-      <!-- <h1>чат</h1> -->
-      <div id="chat-box">
-        <p class="message">образец1</p>
-        <p class="message">образец2</p>
-      </div>
     </div>
-    <!-- <ul class="message-log">
+
+    <!-- <h1>чат</h1> -->
+    <div id="chat-box">
+      <p class="message">образец1</p>
+      <p class="message">образец2</p>
+    </div>
+  </div>
+  <!-- <ul class="message-log">
         </ul> -->
-  </body>
-  <script src="index.js" type="module"></script>
-  <!-- <script src="client-router.js" type="module"></script> -->
+</body>
+<script src="index.js" type="module"></script>
+<!-- <script src="client-router.js" type="module"></script> -->
+
 </html>

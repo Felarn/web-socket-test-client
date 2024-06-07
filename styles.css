@@ -121,7 +121,7 @@ td {
     /* background-color: #06c200; */
     font-size: 60px;
     content: "✕";
-    /* content: "◯"; */
+
 }
 
 /* [data-state="circle"]::after { */
