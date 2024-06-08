@@ -54,21 +54,21 @@
           <td colspan="2">Выбор стороны</td>
         </tr>
         <tr>
-          <td>черные ✕</td>
-          <td>белые ◯</td>
+          <td class="whiteSelection">белые ✕</td>
+          <td class="blackSelection"> черные ◯</td>
         </tr>
         <tr>
-          <td class="sidePickerName">иван</td>
-          <td class="sidePickerName">вася</td>
+          <td id="whitesName" class="whiteSelection sidePickerName">иван</td>
+          <td id="blacksName" class="blackSelection sidePickerName">вася</td>
         </tr>
         <tr>
-          <td><button id="pickWhite">выбрать</button></td>
-          <td><button id="pickBlack">выбрать</button></td>
+          <td class="whiteSelection"><button id="pickWhite">выбрать</button></td>
+          <td class="blackSelection"><button id="pickBlack">выбрать</button></td>
 
         </tr>
-        <tr>
-          <td colspan="2">
-          <td><button id="pickSpectator">наблюдать</button></td>
+        <tr class="spectatorSelection selectedSide">
+          <td class="spectatorSelection" colspan="2">
+            <button id="pickSpectator">наблюдатель</button>
           </td>
         </tr>
         <tr>
@@ -118,9 +118,13 @@
 
     <div>
       <button id="win">победить</button>
+      <button id="lose">проиграть</button>
       <button id="surrender">сдаться</button>
+      <button id="draw">пат</button>
+      <button id="proposeDraw">предложить нечью</button>
+      <button id="acceptDraw">принять предложение на ничью</button>
+      <button id="declineDraw">отказаться от предложения</button>
 
-      <button id="finishTurn">отдать ход</button>
     </div>
     <p></p>
   </div>
@@ -130,6 +134,7 @@
     <div id="winner">ПОБЕДА</div>
     <div id="looser">ПОРАЖЕНИЕ</div>
     <div id="пат">НИЧЬЯ</div>
+    <button id="leaveResults">выйти</button>
   </div>
 
   <!-- ========= видно в лобби, в игре и на победном экране ===================== -->

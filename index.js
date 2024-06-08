@@ -36,6 +36,20 @@ const rememberID = ({ userID }) => {
   sessionStorage.setItem("userID", userID);
 };
 
+const updateColorSelection = (socket) => {
+  const colorSelectionsDictionary = {
+    black: ".blackSelection",
+    white: ".whiteSelection",
+    spectator: ".spectatorSelection",
+  };
+  document
+    .querySelectorAll(".selectedSide")
+    .forEach((elem) => elem.classList.remove("selectedSide"));
+  document
+    .querySelectorAll(colorSelectionsDictionary[state.playerSide])
+    .forEach((elem) => elem.classList.add("selectedSide"));
+};
+
 const updateBoard = () => {
   const boardState = state.board;
   console.log(boardState);
@@ -64,19 +78,12 @@ const updateVisibility = () => {
 
 const updateGameList = (connection) => {
   console.log("updating room list");
-
-  // if (state.gameList.length === 0) {
-
-  //   UI.gameList.cl
-  //   return}
-
   const newList = document.createElement("div");
   state.gameList.forEach((roomInfo) =>
     createRoom(newList, roomInfo, connection)
   );
   console.log(newList);
   UI.gameList.replaceChildren(...newList.children);
-  // UI.gameList.append(newList);
 };
 
 const identification = (connection) => {
@@ -126,8 +133,16 @@ UI.connectionStatus = assign("#status");
 UI.button.newGame = assign("#new-game");
 UI.button.joinGame = assign("#join");
 UI.button.leaveLobby = assign("#leave");
+UI.button.leaveResults = assign("#leaveResults");
 UI.button.sendMessage = assign("#send-message");
 UI.button.startMatch = assign("#startMatch");
+UI.button.win = assign("#win");
+UI.button.lose = assign("#lose");
+UI.button.surrender = assign("#surrender");
+UI.button.draw = assign("#draw");
+UI.button.proposeDraw = assign("#proposeDraw");
+UI.button.acceptDraw = assign("#acceptDraw");
+UI.button.declineDraw = assign("#acceptDraw");
 UI.input.gameID = assign("#ID-to-join");
 UI.input.playerName = assign("#player-name");
 // UI.input.gameName = assign("#");
@@ -160,19 +175,41 @@ updateVisibility();
 const connectServer = () => {
   const socket = new WebSocket(serverURL);
 
+  UI.button.win.addEventListener("click", () => {
+    socket.send(action("finishGame", { result: "win", reason: "тест победы" }));
+  });
+
+  UI.button.lose.addEventListener("click", () => {
+    socket.send(
+      action("finishGame", { result: "loss", reason: "тест поражения" })
+    );
+  });
+
+  UI.button.surrender.addEventListener("click", () => {
+    socket.send(action("finishGame", { result: "loss", reason: "тест сдачи" }));
+  });
+
+  UI.button.draw.addEventListener("click", () => {
+    socket.send(action("finishGame", { result: "draw", reason: "тест пата" }));
+  });
+
+  UI.button.proposeDraw.addEventListener("click", () => {
+    socket.send(action("proposeDraw"));
+  });
+
   UI.button.startMatch.addEventListener("click", () => {
-    // state.board = {
-    //   a1: "empty",
-    //   a2: "empty",
-    //   a3: "empty",
-    //   b1: "empty",
-    //   b2: "empty",
-    //   b3: "empty",
-    //   c1: "empty",
-    //   c2: "empty",
-    //   c3: "empty",
-    // };
-    socket.send(action("startMatch", { board: state.board }));
+    const newBoard = {
+      a1: "empty",
+      a2: "empty",
+      a3: "empty",
+      b1: "empty",
+      b2: "empty",
+      b3: "empty",
+      c1: "empty",
+      c2: "empty",
+      c3: "empty",
+    };
+    socket.send(action("startMatch", { board: newBoard }));
     console.log(state);
   });
 
@@ -224,6 +261,9 @@ const connectServer = () => {
   });
 
   UI.button.leaveLobby.addEventListener("click", () => {
+    socket.send(action("leave"));
+  });
+  UI.button.leaveResults.addEventListener("click", () => {
     socket.send(action("leave"));
   });
 
@@ -289,6 +329,18 @@ const connectServer = () => {
 
       case "yourSide":
         state.playerSide = payload.side;
+        updateColorSelection(socket);
+        break;
+
+      case "gameEnded":
+        state.gameResult = payload.result;
+        state.closureReason = payload.reason;
+
+        break;
+
+      case "drawProposal":
+        console.log("drawProposal");
+        state.isDrawProposalActive = true;
         break;
 
       default:
