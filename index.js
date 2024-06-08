@@ -237,6 +237,7 @@ const connectServer = () => {
   });
 
   socket.onopen = function (event) {
+    setInterval(() => socket.send(action("hello")), 20000);
     identification(socket);
     UI.connectionStatus.classList = ["online"];
     console.log("WebSocket connection established");
@@ -282,7 +283,7 @@ const connectServer = () => {
         break;
 
       case "roomsList":
-        state.gameList = payload;
+        state.gameList = payload.list;
         updateGameList(socket);
         break;
 
