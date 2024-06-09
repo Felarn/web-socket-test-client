@@ -25,6 +25,8 @@ body {
 
 .chat-bounding-box {
     display: flex;
+    width: 100%;
+    /* min-width: 330px; */
 }
 
 #chat-box {
@@ -40,6 +42,11 @@ body {
 
 .message {
     border-bottom: 1px solid #ccc;
+    width: 100%;
+    min-width: 330px;
+
+
+    /* более приоритетно */
 }
 
 /* стили аватарок */
@@ -223,7 +230,10 @@ body {
 .console {
     font-size: 15px;
     font-style: italic;
+    word-wrap: break-word;
+    word-break: break-all;
 }
+
 
 .selectedSide {
     background-color: #06c200;
