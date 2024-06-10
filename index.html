@@ -9,10 +9,10 @@
 </head>
 
 <body>
-  <p id="status" class="offline">status</p>
+  <p id="status" class="offline">состояние подключения</p>
 
   <div>
-    <input id="player-name" class="outOfGame inLobby anon" type="text" placeholder="Enter your name" />
+    <input id="player-name" class="outOfGame inLobby" type="text" placeholder="Enter your name" />
   </div>
 
   <!-- ============ видно на главном экране ================ -->
@@ -27,26 +27,15 @@
     </div>
 
     <div id="gameList" class="room-list">
-      <!-- <div class="room">
-                <h2>Комната 1</h2>
-                <p class="creator">Создатель: имясоздателя</p>
-                <p class="participants">Количество участников: 3</p>
-                <p class="id">ID: 6d8b4dde-3ac6-4f57-92b1-679810c643a4</p>
-            </div>-->
     </div>
   </div>
 
   <!-- ================== видно в лобби ==================== -->
   <div id="lobby" class="inLobby">
-    <input id="room-name" class="outOfGame inLobby" type="text" placeholder="переименовать" />
+    <input id="renameGame" class="outOfGame inLobby" type="text" placeholder="переименовать игру" />
     <div>
       <button id="leave">покинуть комнату</button>
     </div>
-
-    <!-- <div >
-        <button id="pickSideCross" class="inLobby">играть за ✕</button> 
-        <button id="pickSideCircle" class="inLobby">играть за ◯</button> 
-    </div> -->
 
     <table class="sidePicker">
       <tbody>
@@ -124,68 +113,37 @@
       <button id="proposeDraw">предложить нечью</button>
       <button id="acceptDraw">принять предложение на ничью</button>
       <button id="declineDraw">отказаться от предложения</button>
-
     </div>
     <p></p>
   </div>
 
   <!-- ================== победный экран ===================== -->
   <div id="resultScreen" class="onResultScreen">
-    <div id="winner">ПОБЕДА</div>
-    <div id="looser">ПОРАЖЕНИЕ</div>
-    <div id="пат">НИЧЬЯ</div>
+    <div id="winner" class="matchResult">ПОБЕДА</div>
+    <div id="looser" class="matchResult">ПОРАЖЕНИЕ</div>
+    <div id="resultDraw" class="matchResult">НИЧЬЯ</div>
+
     <button id="leaveResults">выйти</button>
   </div>
 
   <!-- ========= видно в лобби, в игре и на победном экране ===================== -->
   <div class="socialsContainer inLobby inGame">
-
     <div id="chat-input" class="inLobby inGame">
-
       <textarea name="message" id="message-box" cols="30" rows="3"></textarea>
       <button id="send-message">Send message</button>
-
     </div>
+
     <div id="playerList">
-      <div class="playerInfo black"><span class="playerConnectionStatus online "> </span>игрок1</div>
-      <div class="playerInfo"><span class="playerConnectionStatus offline"> </span>игрок2</div>
-      <div class="playerInfo white"><span class="playerConnectionStatus online "></span>игрок3</div>
-      <div class="playerInfo"><span class="playerConnectionStatus offline"></span>игрок4</div>
     </div>
   </div>
 
   <!-- ================== видно всегда ===================== -->
   <div class="chat-bounding-box">
-    <div class="users-bounding-box">
-      <h1 class="hidden">Users:</h1>
-      <div class="user-table hidden">
-        <div class="user-row">
-          <div class="user-avatar"></div>
-          <div class="user-info">
-            <div class="user-name">User 1</div>
-            <!-- <div class="user-status">Online</div> -->
-          </div>
-        </div>
-        <div class="user-row">
-          <div class="user-avatar"></div>
-          <div class="user-info">
-            <div class="user-name">User 3</div>
-            <!-- <div class="user-status">Online</div> -->
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- <h1>чат</h1> -->
     <div id="chat-box">
-      <!-- <p class="message">образец1</p>
-      <p class="message">образец2</p> -->
     </div>
   </div>
-  <!-- <ul class="message-log">
-        </ul> -->
 </body>
 <script src="index.js" type="module"></script>
-<!-- <script src="client-router.js" type="module"></script> -->
+
 
 </html>

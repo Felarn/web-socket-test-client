@@ -127,13 +127,23 @@ const updateTurnHeader = (state) => {
 
 const assign = (query) => document.querySelector(query);
 
-const updateNames = ({ info }, { whitePlayerName, blackPlayerName }) => {
+const updateNames = (
+  { info, input },
+  { whitePlayerName, blackPlayerName, gameName }
+) => {
   info.blacksName.textContent = blackPlayerName;
   info.whitesName.textContent = whitePlayerName;
+  if (document.activeElement !== input.renameGame)
+    input.renameGame.value = gameName;
 };
 //  ================= ссылки на UI =================
 
 UI.connectionStatus = assign("#status");
+UI.messageLog = assign("#chat-box");
+UI.board = assign("#board");
+UI.gameList = assign("#gameList");
+
+UI.playerList = assign("#playerList");
 UI.button.newGame = assign("#new-game");
 UI.button.joinGame = assign("#join");
 UI.button.leaveLobby = assign("#leave");
@@ -147,17 +157,16 @@ UI.button.draw = assign("#draw");
 UI.button.proposeDraw = assign("#proposeDraw");
 UI.button.acceptDraw = assign("#acceptDraw");
 UI.button.declineDraw = assign("#acceptDraw");
-UI.input.gameID = assign("#ID-to-join");
-UI.input.playerName = assign("#player-name");
-// UI.input.gameName = assign("#");
-UI.input.messageBox = assign("#message-box");
-UI.messageLog = assign("#chat-box");
-UI.board = assign("#board");
 UI.button.pickWhite = assign("#pickWhite");
 UI.button.pickBlack = assign("#pickBlack");
 UI.button.pickSpectator = assign("#pickSpectator");
-UI.gameList = assign("#gameList");
-UI.playerList = assign("#playerList");
+
+UI.input.gameID = assign("#ID-to-join");
+UI.input.playerName = assign("#player-name");
+UI.input.gameName = assign("#game-name");
+UI.input.messageBox = assign("#message-box");
+UI.input.renameGame = assign("#renameGame");
+
 UI.info.turnColor = assign("#turnColor");
 UI.info.activePlayer = assign("#activePlayer");
 UI.info.whitesName = assign("#whitesName");
@@ -181,6 +190,15 @@ updateVisibility();
 
 const connectServer = () => {
   const socket = new WebSocket(serverURL);
+
+  UI.input.renameGame.addEventListener("input", (event) => {
+    socket.send(action("renameGame", { newGameName: event.target.value }));
+  });
+
+  UI.input.renameGame.addEventListener("focusout", (event) => {
+    socket.send(action("renameGame", { newGameName: event.target.value }));
+    // updateNames(UI, state);
+  });
 
   UI.button.win.addEventListener("click", () => {
     socket.send(action("finishGame", { result: "win", reason: "тест победы" }));
@@ -275,7 +293,7 @@ const connectServer = () => {
   });
 
   UI.button.newGame.addEventListener("click", () => {
-    socket.send(action("createGame"));
+    socket.send(action("createGame", { gameName: UI.input.gameName.value }));
   });
 
   UI.input.playerName.addEventListener("input", (event) => {
@@ -357,6 +375,7 @@ const connectServer = () => {
         state.playerList.forEach((palyer) => console.log(palyer));
         state.whitePlayerName = payload.whitePlayerName;
         state.blackPlayerName = payload.blackPlayerName;
+        state.gameName = payload.gameName;
         fillPlayerList(UI.playerList, state.playerList);
         updateNames(UI, state);
         break;
