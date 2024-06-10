@@ -22,6 +22,14 @@ body {
     /* border-color: red; */
 }
 
+#status.offline::after {
+    content: "offline";
+}
+
+#status.online::after {
+    content: "online";
+}
+
 .flex-container {
     display: flex;
 }
