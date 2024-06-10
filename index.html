@@ -138,10 +138,19 @@
   </div>
 
   <!-- ========= видно в лобби, в игре и на победном экране ===================== -->
-  <div id="chat-input" class="inLobby inGame">
-    <div>
+  <div class="socialsContainer inLobby inGame">
+
+    <div id="chat-input" class="inLobby inGame">
+
       <textarea name="message" id="message-box" cols="30" rows="3"></textarea>
       <button id="send-message">Send message</button>
+
+    </div>
+    <div id="playerList">
+      <div class="playerInfo black"><span class="playerConnectionStatus online "> </span>игрок1</div>
+      <div class="playerInfo"><span class="playerConnectionStatus offline"> </span>игрок2</div>
+      <div class="playerInfo white"><span class="playerConnectionStatus online "></span>игрок3</div>
+      <div class="playerInfo"><span class="playerConnectionStatus offline"></span>игрок4</div>
     </div>
   </div>
 
@@ -169,8 +178,8 @@
 
     <!-- <h1>чат</h1> -->
     <div id="chat-box">
-      <p class="message">образец1</p>
-      <p class="message">образец2</p>
+      <!-- <p class="message">образец1</p>
+      <p class="message">образец2</p> -->
     </div>
   </div>
   <!-- <ul class="message-log">

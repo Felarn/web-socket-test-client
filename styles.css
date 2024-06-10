@@ -10,12 +10,15 @@ body {
 
 
 .offline {
-    background-color: red;
+    background-color: rgb(204, 14, 0);
+    box-shadow: inset 0 0 10px rgba(255, 24, 24, 0.87), 2px 3px 3px rgba(255, 166, 1, 0.6);
     /* border-color: red; */
 }
 
 .online {
     background-color: green;
+    box-shadow: inset 0 0 10px rgba(56, 255, 29, 0.87), 2px 3px 3px rgba(200, 255, 1, 0.6), 2px 3px 3px rgba(200, 255, 1, 0.6);
+    /* box-shadow: inset ; */
     /* border-color: red; */
 }
 
@@ -24,6 +27,7 @@ body {
 }
 
 .chat-bounding-box {
+    min-height: 100px;
     display: flex;
     width: 100%;
     /* min-width: 330px; */
@@ -138,9 +142,7 @@ td {
     content: "◯";
 }
 
-.hidden {
-    display: none;
-}
+
 
 body {
     background-color: #cec9c4;
@@ -234,9 +236,102 @@ body {
     word-break: break-all;
 }
 
+#chat-input {
+    position: relative;
+    width: 200px;
+    height: 100px;
+    border: 1px solid #ddd;
+}
+
+#send-message {
+    position: absolute;
+    bottom: 5px;
+    right: 3px;
+    width: 60px;
+}
+
+#message-box {
+    position: relative;
+    border: none;
+    width: 200px;
+    height: 95px;
+    resize: none;
+    outline: none;
+    box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.5);
+    /* add this to stop highlight on focus */
+}
 
 .selectedSide {
     background-color: #06c200;
     box-shadow: inset 0 0 5px rgba(0, 0, 20, 0.6);
     border-radius: 3px;
+}
+
+.socialsContainer {
+    display: flex;
+}
+
+#playerList {
+    overflow-y: scroll;
+    border: 1px solid #f2fdff;
+    background: aliceblue;
+    padding: 5px;
+    margin: 2px;
+    width: 100%;
+    box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.5);
+}
+
+.playerInfo {
+    display: flex;
+    background-color: rgb(234, 244, 245);
+    box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7), inset 0 0 3px rgb(175, 171, 187);
+    margin: 3px;
+    border-radius: 3px;
+    /* align-items: ; */
+    padding: 1px;
+}
+
+.playerInfo.black {
+    background-color: black;
+    font-weight: 700;
+    color: #242424;
+    /* text-shadow: 2px 2px 2px rgb(255, 255, 255), -1px -1px 2px rgb(255, 255, 255), 2px -2px 2px rgb(255, 255, 255); */
+    text-shadow: 1px 1px 1px rgb(165, 165, 165),
+        -1px -1px 1px rgb(172, 172, 172),
+        1px -1px 1px rgb(255, 255, 255),
+        -1px 1px 1px rgb(255, 255, 255);
+    box-shadow: 1px 1px 1px white, 1px 1px 2px rgb(0, 0, 0), inset 0 0 5px rgba(250, 250, 250, 0.7);
+}
+
+.playerInfo.black::after {
+    content: "(черные ◯)";
+}
+
+.playerInfo.white::after {
+    content: "(белые ✕)";
+}
+
+.playerInfo.white {
+    background-color: rgb(255, 255, 255);
+    color: rgb(255, 255, 255);
+    font-weight: 700;
+    box-shadow: 1px 1px 1px rgba(0, 0, 0, 1),
+        inset 0 0 4px rgba(0, 0, 0, 0.35);
+    text-shadow: 2px 2px 4px black,
+        -1px -1px 2px black,
+        2px -1px 3px black,
+        -1px 1px 1px black;
+}
+
+
+.playerConnectionStatus {
+    height: 20px;
+    width: 20px;
+    /* display: block; */
+    border-radius: 10px;
+    margin: 2px 6px;
+}
+
+.hidden {
+    display: none;
 }

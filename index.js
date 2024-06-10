@@ -2,6 +2,7 @@ import action from "./src/action.js";
 import ClientRouter from "./client-router.js";
 import createRoom from "./src/createRoom.js";
 import getServerUrl from "./src/getServerUrl.js";
+import fillPlayerList from "./src/fillPlayerList.js";
 
 // константы
 const reconnectionTimeout = 1000;
@@ -82,7 +83,6 @@ const updateGameList = (connection) => {
   state.gameList.forEach((roomInfo) =>
     createRoom(newList, roomInfo, connection)
   );
-  console.log(newList);
   UI.gameList.replaceChildren(...newList.children);
 };
 
@@ -127,6 +127,10 @@ const updateTurnHeader = (state) => {
 
 const assign = (query) => document.querySelector(query);
 
+const updateNames = ({ info }, { whitePlayerName, blackPlayerName }) => {
+  info.blacksName.textContent = blackPlayerName;
+  info.whitesName.textContent = whitePlayerName;
+};
 //  ================= ссылки на UI =================
 
 UI.connectionStatus = assign("#status");
@@ -156,6 +160,8 @@ UI.gameList = assign("#gameList");
 UI.playerList = assign("#playerList");
 UI.info.turnColor = assign("#turnColor");
 UI.info.activePlayer = assign("#activePlayer");
+UI.info.whitesName = assign("#whitesName");
+UI.info.blacksName = assign("#blacksName");
 
 const visibilityDomens = {
   name: UI.input.playerName,
@@ -164,6 +170,7 @@ const visibilityDomens = {
   game: assign("#game"),
   result: assign("#resultScreen"),
   chat: assign("#chat-input"),
+  socialsContainer: assign(".socialsContainer"),
 };
 
 // ============ инициализация ==================
@@ -341,6 +348,17 @@ const connectServer = () => {
       case "drawProposal":
         console.log("drawProposal");
         state.isDrawProposalActive = true;
+        break;
+
+      case "playerList":
+        console.log("===================================");
+
+        state.playerList = payload.playerList;
+        state.playerList.forEach((palyer) => console.log(palyer));
+        state.whitePlayerName = payload.whitePlayerName;
+        state.blackPlayerName = payload.blackPlayerName;
+        fillPlayerList(UI.playerList, state.playerList);
+        updateNames(UI, state);
         break;
 
       default:
