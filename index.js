@@ -127,6 +127,14 @@ const updateTurnHeader = (state) => {
 
 const assign = (query) => document.querySelector(query);
 
+const setPrivacy = (UI, isPrivate) => {
+  UI.privateGame.checked = isPrivate;
+};
+
+const showId = (UI, ID) => {
+  UI.info.IDdisplay.textContent = `ID для подключения: ${ID}`;
+};
+
 const updateNames = (
   { info, input },
   { whitePlayerName, blackPlayerName, gameName }
@@ -136,14 +144,17 @@ const updateNames = (
   if (document.activeElement !== input.renameGame)
     input.renameGame.value = gameName;
 };
+
 //  ================= ссылки на UI =================
 
 UI.connectionStatus = assign("#status");
 UI.messageLog = assign("#chat-box");
 UI.board = assign("#board");
 UI.gameList = assign("#gameList");
+UI.privateGame = assign("#privateGame");
 
 UI.playerList = assign("#playerList");
+UI.button.copyID = assign("#copyID");
 UI.button.newGame = assign("#new-game");
 UI.button.joinGame = assign("#join");
 UI.button.leaveLobby = assign("#leave");
@@ -171,6 +182,7 @@ UI.info.turnColor = assign("#turnColor");
 UI.info.activePlayer = assign("#activePlayer");
 UI.info.whitesName = assign("#whitesName");
 UI.info.blacksName = assign("#blacksName");
+UI.info.IDdisplay = assign("#IDdisplay");
 
 const visibilityDomens = {
   name: UI.input.playerName,
@@ -190,6 +202,22 @@ updateVisibility();
 
 const connectServer = () => {
   const socket = new WebSocket(serverURL);
+
+  UI.button.copyID.addEventListener("click", () => {
+    navigator.clipboard
+      .writeText(state.gameID)
+      .then(function () {
+        console.log("ID скопирован");
+      })
+      .catch(function () {
+        console.error("Не удалось скопировать текст: ", err);
+      });
+  });
+
+  UI.privateGame.addEventListener("change", () => {
+    const isPrivate = UI.privateGame.checked;
+    socket.send(action("switcGamePrivacy", { isPrivate }));
+  });
 
   UI.input.renameGame.addEventListener("input", (event) => {
     socket.send(action("renameGame", { newGameName: event.target.value }));
@@ -252,8 +280,7 @@ const connectServer = () => {
     state.playerSide = "spectator";
     socket.send(action("pickSide", { side: state.playerSide }));
   });
-
-  UI.board.addEventListener("click", (event) => {
+  ID: UI.board.addEventListener("click", (event) => {
     // the actual game
     const fieldName = event.target.id;
     const fieldState = state.board[fieldName];
@@ -376,8 +403,12 @@ const connectServer = () => {
         state.whitePlayerName = payload.whitePlayerName;
         state.blackPlayerName = payload.blackPlayerName;
         state.gameName = payload.gameName;
+        state.isPrivate = payload.isPrivate;
+        state.gameID = payload.gameID;
         fillPlayerList(UI.playerList, state.playerList);
         updateNames(UI, state);
+        setPrivacy(UI, state.isPrivate);
+        showId(UI, state.gameID);
         break;
 
       default:

@@ -32,10 +32,18 @@
 
   <!-- ================== видно в лобби ==================== -->
   <div id="lobby" class="inLobby">
+    Игра:
     <input id="renameGame" class="outOfGame inLobby" type="text" placeholder="переименовать игру" />
+    <div class="flex-container">
+      <div id="IDdisplay"> ID: </div><button id="copyID">Копировать в буфер</button>
+    </div>
     <div>
       <button id="leave">покинуть комнату</button>
     </div>
+
+    <label for="privateGame">Закрытая игра:</label>
+    <input type="checkbox" id="privateGame" checked>
+
 
     <table class="sidePicker">
       <tbody>
